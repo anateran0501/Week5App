@@ -44,8 +44,11 @@ level_completed = 1 if level_completed == "Yes" else 0
 if models:
     model_name = st.selectbox("Select a model for prediction", list(models.keys()))
     
-    # Prepare input for prediction
-    input_features = np.array([[last_level_attempts, last_level_cleared, difficulty, level_completed]])
+    # Prepare input for prediction based on the selected model
+    if model_name in ["Decision Tree", "Random Forest"]:
+        input_features = np.array([[last_level_attempts, last_level_cleared, difficulty]])  # These models expect 3 features
+    else:
+        input_features = np.array([[last_level_attempts, last_level_cleared, difficulty, level_completed]])  # These models expect 4 features
     
     # Make predictions
     if st.button("Predict"):
