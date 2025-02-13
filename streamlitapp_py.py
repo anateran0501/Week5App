@@ -10,6 +10,7 @@ Original file is located at
 import streamlit as st
 import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 # Generate synthetic data
 np.random.seed(42)
@@ -29,8 +30,14 @@ data = {
 df = pd.DataFrame(data)
 df['average_level_time'] = df['time_spent'] / df['level_completed']
 
+# Train a simple model to predict time spent based on level and difficulty
+X = df[['level_completed', 'difficulty']]
+y = df['time_spent']
+model = LinearRegression()
+model.fit(X, y)
+
 # Streamlit UI
-st.title("Game Player Analytics")
+st.title("Game Player Analytics & Prediction")
 
 # Filters
 level = st.selectbox("Filter by Level Completed", [None] + sorted(df['level_completed'].unique()))
@@ -47,3 +54,12 @@ if difficulty:
     filtered_df = filtered_df[filtered_df["difficulty"] == difficulty]
 
 st.dataframe(filtered_df)
+
+# User input for prediction
+st.header("Predict Time Spent")
+user_level = st.number_input("Enter Level Completed", min_value=1, max_value=10, value=5)
+user_difficulty = st.number_input("Enter Difficulty Level", min_value=1, max_value=6, value=3)
+
+if st.button("Predict Time Spent"):
+    prediction = model.predict([[user_level, user_difficulty]])
+    st.write(f"Predicted Time Spent: {prediction[0]:.2f} seconds")
