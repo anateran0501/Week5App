@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
-#import pickle
-import joblib  # Import joblib
+import pickle
+import numpy as np  # For reshaping input
 
 # Load the trained models
 def load_model(filename):
     with open(filename, 'rb') as file:
-        return joblib.load(file)  # Use joblib.load
+        return pickle.load(file)
 
 models = {
     "Decision Tree": load_model("Decision_Tree.pkl"),
@@ -14,7 +14,6 @@ models = {
     "Random Forest": load_model("Random_Forest.pkl"),
     "Support Vector Regression": load_model("Support_Vector_Regression.pkl")
 }
-
 
 # Load the dataset
 data = pd.read_csv("synthetic_game_data.csv")
@@ -39,14 +38,17 @@ level_completed = 1 if level_completed == "Yes" else 0
 model_name = st.selectbox("Select a model for prediction", list(models.keys()))
 
 # Prepare input for prediction
-input_features = [[last_level_attempts, last_level_cleared, difficulty, level_completed]]
+input_features = np.array([[last_level_attempts, last_level_cleared, difficulty, level_completed]])
 
 # Make predictions
 if st.button("Predict"):
     model = models[model_name]
-    prediction = model.predict(input_features)
-    st.write(f"**Prediction using {model_name}:**")
-    st.write(f"- Next Level: {int(prediction[0])}")  # Assuming the next level is a whole number
-    st.write(f"- Level of Difficulty: 1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard {round(prediction[0], 2)}")  # Example: treating the prediction as difficulty score
+    try:
+        prediction = model.predict(input_features)
+        st.write(f"**Prediction using {model_name}:**")
+        st.write(f"- Next Level: {int(prediction[0])}")  # Assuming the next level is a whole number
+        st.write(f"- Level of Difficulty: 1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard")
+    except ValueError as e:
+        st.error(f"Error during prediction: {e}")
 
 st.write("\n**Note:** Adjust the input features and select different models to compare predictions.")
