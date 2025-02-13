@@ -28,34 +28,32 @@ last_level_attempts = st.number_input("Attempts for last level", min_value=0, va
 level_cleared = st.selectbox("Was the Latest Level Cleared?", ["No", "Yes"])
 difficulty = st.number_input("Current Difficulty (1 to 6)", min_value=1, max_value=6, value=3)
 
-
 # Map input values
 level_cleared_num = 1 if level_cleared == "Yes" else 0
-
 difficulty_num = difficulty
 
+# Button to start prediction
+if st.button("Predict"):
+    # Prepare input data
+    input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
 
+    # Load trained models (dummy training here for demonstration)
+    X = np.random.rand(100, 4)  # Dummy features
+    y_next_level = np.random.randint(1, 11, 100)  # Dummy target for next level
+    y_next_difficulty = np.random.randint(1, 4, 100)  # Dummy target for next difficulty
 
-# Prepare input data
-input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
+    selected_model = models[model_name]
+    selected_model.fit(X, y_next_level)  # Train the model for next level prediction
+    next_level_prediction = selected_model.predict(input_data)[0]
 
-# Load trained models (dummy training here for demonstration)
-X = np.random.rand(100, 4)  # Dummy features
-y_next_level = np.random.randint(1, 11, 100)  # Dummy target for next level
-y_next_difficulty = np.random.randint(1, 4, 100)  # Dummy target for next difficulty
+    selected_model.fit(X, y_next_difficulty)  # Train the model for next difficulty prediction
+    next_difficulty_prediction = selected_model.predict(input_data)[0]
 
-selected_model = models[model_name]
-selected_model.fit(X, y_next_level)  # Train the model for next level prediction
-next_level_prediction = selected_model.predict(input_data)[0]
+    # Map numerical difficulty back to text
+    difficulty_reverse_mapping = {1: 'Very easy', 2: 'Easy', 3: 'Medium', 4: 'Challenging', 5: 'Hard', 6: 'Very hard'}
+    predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
 
-selected_model.fit(X, y_next_difficulty)  # Train the model for next difficulty prediction
-next_difficulty_prediction = selected_model.predict(input_data)[0]
-
-# Map numerical difficulty back to text
-difficulty_reverse_mapping = {1: 'Very easy', 2: 'Easy', 3: 'Medium', 4: 'Challenging', 5: 'Hard', 6: 'Very hard'}
-predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
-
- # Display predictions
-st.subheader("Predicted Outcome:")
-st.write(f"**Next Level:** {int(next_level_prediction)}")
-st.write(f"**Next Difficulty (1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard):**  {predicted_difficulty}")
+    # Display predictions
+    st.subheader("Predicted Outcome:")
+    st.write(f"**Next Level:** {int(next_level_prediction)}")
+    st.write(f"**Next Difficulty (1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard):**  {predicted_difficulty}")
