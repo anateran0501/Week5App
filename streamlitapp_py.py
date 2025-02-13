@@ -25,13 +25,13 @@ model_name = st.selectbox("Select an AI model", list(models.keys()))
 st.subheader("Enter gameplay data:")
 last_level_attempts = st.number_input("Last Level Attempts", min_value=0, value=5)
 level_cleared = st.selectbox("Was the Latest Level Cleared?", ["No", "Yes"])
-difficulty = st.selectbox("Current Difficulty", ['easy', 'medium', 'hard'])
+difficulty = st.number_input("Current Difficulty (1 to 6)", min_value=1, max_value=6, value=3)
 level_completed = st.number_input("Levels Completed", min_value=0, value=1)
 
 # Map input values
 level_cleared_num = 1 if level_cleared == "Yes" else 0
-difficulty_mapping = {'easy': 1, 'medium': 2, 'hard': 3}
-difficulty_num = difficulty_mapping[difficulty]
+
+difficulty_num = difficulty
 
 # Prepare input data
 input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
@@ -49,7 +49,7 @@ selected_model.fit(X, y_next_difficulty)  # Train the model for next difficulty 
 next_difficulty_prediction = selected_model.predict(input_data)[0]
 
 # Map numerical difficulty back to text
-difficulty_reverse_mapping = {1: 'easy', 2: 'medium', 3: 'hard'}
+difficulty_reverse_mapping = {1: 'very easy', 2: 'easy', 3: 'medium', 4: 'challenging', 5: 'hard', 6: 'very hard'}
 predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
 
 # Display predictions
