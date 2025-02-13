@@ -19,7 +19,7 @@ levels = 10
 data = {
     'player_id': np.arange(1, num_players + 1),
     'level_achieved': np.random.randint(1, levels + 1, num_players),
-    'level_cleared': np.random.randint(1, levels + 1, num_players),
+    'level_cleared': np.random.choice([0, 1], num_players),  # 1 if cleared, 0 if not
     'attempts': np.random.randint(1, 11, num_players),
     'difficulty': np.random.randint(1, 7, num_players),
 }
@@ -44,7 +44,7 @@ st.title("Game Player Analytics & Next Level Prediction")
 st.header("Predict Next Level and Difficulty")
 user_attempts = st.number_input("Enter Number of Attempts", min_value=1, max_value=10, value=5)
 user_level_achieved = st.number_input("Enter Level Achieved", min_value=1, max_value=10, value=5)
-user_level_cleared = st.number_input("Enter Level Cleared", min_value=1, max_value=10, value=5)
+user_level_cleared = st.radio("Was the Level Cleared?", [0, 1], index=1)  # 1 if cleared, 0 if not
 
 if st.button("Predict Next Level & Difficulty"):
     next_level = level_model.predict([[user_attempts, user_level_achieved, user_level_cleared]])
@@ -52,4 +52,5 @@ if st.button("Predict Next Level & Difficulty"):
     
     st.write(f"Predicted Next Level: {int(next_level[0])}")
     st.write(f"Predicted Next Difficulty: {int(next_difficulty[0])}")
+
 
