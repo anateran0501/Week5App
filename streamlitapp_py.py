@@ -45,6 +45,6 @@ if st.button("Predict"):
     prediction = model.predict(input_features)
     st.write(f"**Prediction using {model_name}:**")
     st.write(f"- Next Level: {int(prediction[0])}")  # Assuming the next level is a whole number
-    st.write(f"- Level of Difficulty: {round(prediction[0], 2)}")  # Example: treating the prediction as difficulty score
+    st.write(f"- Level of Difficulty: 1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard {round(prediction[0], 2)}")  # Example: treating the prediction as difficulty score
 
 st.write("\n**Note:** Adjust the input features and select different models to compare predictions.")
