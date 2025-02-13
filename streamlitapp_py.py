@@ -1,64 +1,50 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.svm import SVR
+import pickle
 
-# Initialize models
+# Load the trained models
+def load_model(filename):
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
+
 models = {
-    'Linear Regression': LinearRegression(),
-    'Decision Tree': DecisionTreeRegressor(),
-    'Random Forest': RandomForestRegressor(),
-    'Support Vector Regression': SVR()
+    "Decision Tree": load_model("Decision_Tree.pkl"),
+    "Linear Regression": load_model("Linear_Regression.pkl"),
+    "Random Forest": load_model("Random_Forest.pkl"),
+    "Support Vector Regression": load_model("Support_Vector_Regression.pkl")
 }
 
-# Streamlit app
-st.title("AI-Powered Game Level Predictor")
-st.markdown("""This app predicts the player's next level and its difficulty based on gameplay data using various AI models.""")
+# Load the dataset
+data = pd.read_csv("synthetic_game_data.csv")
 
-# Model selection
-model_name = st.selectbox("Select an AI model", list(models.keys()))
+st.title("Game Level Predictor App")
 
-# User input for prediction
-st.subheader("Enter gameplay data:")
-last_level_attempts = st.number_input("Last Level Attempts", min_value=0, value=5)
-level_cleared = st.selectbox("Was the Latest Level Cleared?", ["No", "Yes"])
-difficulty = st.number_input("Current Difficulty (1 to 6)", min_value=1, max_value=6, value=3)
-level_completed = st.number_input("Levels Completed", min_value=0, value=1)
+st.write("This app predicts the next game level and its level of difficulty using pre-trained AI models.")
 
-# Map input values
-level_cleared_num = 1 if level_cleared == "Yes" else 0
-difficulty_num = difficulty
+# Display dataset preview
+if st.checkbox("Show dataset preview"):
+    st.write(data.head())
 
-# Prepare input data
-input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
+# User inputs for prediction
+st.sidebar.header("Input Features")
+last_level_attempts = st.sidebar.slider("Last Level Attempts", min_value=1, max_value=10, value=5)
+last_level_cleared = st.sidebar.slider("Last Level Cleared", min_value=1, max_value=10, value=5)
+difficulty = st.sidebar.slider("Difficulty", min_value=1, max_value=6, value=3)
+level_completed = st.sidebar.radio("Level Completed", options=["Yes", "No"])
+level_completed = 1 if level_completed == "Yes" else 0
 
-# Prediction logic with button
-if st.button("Predict Next Level and Difficulty"):
-    if last_level_attempts > 5 and level_cleared_num == 0:
-        next_level_prediction = level_completed  # Stay on the same level
-        next_difficulty_prediction = max(1, difficulty_num - 1)  # Lower difficulty level
-    elif level_cleared_num == 1:
-        next_level_prediction = level_completed + 1  # Suggest next level
-        next_difficulty_prediction = min(6, difficulty_num + 1)  # Next level difficulty
-    else:
-        next_level_prediction = level_completed  # Stay on the same level
-        next_difficulty_prediction = difficulty_num  # Same difficulty
-    
-    # Load trained models (dummy training here for demonstration)
-    X = np.random.rand(100, 4)  # Dummy features
-    y_next_difficulty = np.random.randint(1, 4, 100)  # Dummy target for next difficulty
-    selected_model = models[model_name]
-    selected_model.fit(X, y_next_difficulty)  # Train the model for next difficulty prediction
-    next_difficulty_prediction = selected_model.predict(input_data)[0]
+# Select the model
+model_name = st.selectbox("Select a model for prediction", list(models.keys()))
 
-    # Map numerical difficulty back to text
-    difficulty_reverse_mapping = {1: 'very easy', 2: 'easy', 3: 'medium', 4: 'challenging', 5: 'hard', 6: 'very hard'}
-    predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
+# Prepare input for prediction
+input_features = [[last_level_attempts, last_level_cleared, difficulty, level_completed]]
 
-    # Display predictions
-    st.subheader("Predicted Outcome:")
-    st.write(f"**Next Level:** {int(next_level_prediction)}")
-    st.write(f"**Next Difficulty:** {predicted_difficulty}")
+# Make predictions
+if st.button("Predict"):
+    model = models[model_name]
+    prediction = model.predict(input_features)
+    st.write(f"**Prediction using {model_name}:**")
+    st.write(f"- Next Level: {int(prediction[0])}")  # Assuming the next level is a whole number
+    st.write(f"- Level of Difficulty: {round(prediction[0], 2)}")  # Example: treating the prediction as difficulty score
+
+st.write("\n**Note:** Adjust the input features and select different models to compare predictions.")
