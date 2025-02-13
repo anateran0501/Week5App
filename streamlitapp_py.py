@@ -34,6 +34,8 @@ level_cleared_num = 1 if level_cleared == "Yes" else 0
 
 difficulty_num = difficulty
 
+
+
 # Prepare input data
 input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
 
@@ -53,7 +55,7 @@ next_difficulty_prediction = selected_model.predict(input_data)[0]
 difficulty_reverse_mapping = {1: 'Very easy', 2: 'Easy', 3: 'Medium', 4: 'Challenging', 5: 'Hard', 6: 'Very hard'}
 predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
 
-# Display predictions
+ # Display predictions
 st.subheader("Predicted Outcome:")
 st.write(f"**Next Level:** {int(next_level_prediction)}")
 st.write(f"**Next Difficulty (1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard):**  {predicted_difficulty}")
