@@ -24,16 +24,17 @@ model_name = st.selectbox("Select an AI model", list(models.keys()))
 # User input for prediction
 st.subheader("Enter gameplay data:")
 last_level_attempts = st.number_input("Last Level Attempts", min_value=0, value=5)
-last_level_cleared = st.number_input("Last Level Cleared", min_value=0, value=1)
+level_cleared = st.selectbox("Was the Latest Level Cleared?", ["No", "Yes"])
 difficulty = st.selectbox("Current Difficulty", ['easy', 'medium', 'hard'])
 level_completed = st.number_input("Levels Completed", min_value=0, value=1)
 
-# Map difficulty to numerical values
+# Map input values
+level_cleared_num = 1 if level_cleared == "Yes" else 0
 difficulty_mapping = {'easy': 1, 'medium': 2, 'hard': 3}
 difficulty_num = difficulty_mapping[difficulty]
 
 # Prepare input data
-input_data = np.array([[last_level_attempts, last_level_cleared, difficulty_num, level_completed]])
+input_data = np.array([[last_level_attempts, level_cleared_num, difficulty_num, level_completed]])
 
 # Load trained models (dummy training here for demonstration)
 X = np.random.rand(100, 4)  # Dummy features
