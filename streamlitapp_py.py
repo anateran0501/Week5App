@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import joblib  # Import joblib
 
 # Load the trained models
 def load_model(filename):
     with open(filename, 'rb') as file:
-        return pickle.load(file)
+        return joblib.load(file)  # Use joblib.load
 
 models = {
     "Decision Tree": load_model("Decision_Tree.pkl"),
@@ -13,6 +14,7 @@ models = {
     "Random Forest": load_model("Random_Forest.pkl"),
     "Support Vector Regression": load_model("Support_Vector_Regression.pkl")
 }
+
 
 # Load the dataset
 data = pd.read_csv("synthetic_game_data.csv")
