@@ -24,7 +24,7 @@ model_name = st.selectbox("Select an AI model", list(models.keys()))
 # User input for prediction
 st.subheader("Enter gameplay data:")
 level_completed = st.number_input("Last Level Completed", min_value=0, value=1)
-last_level_attempts = st.number_input("Attempts for last level", min_value=1, value=10)
+last_level_attempts = st.number_input("Attempts for last level", min_value=0, value=5)
 level_cleared = st.selectbox("Was the Latest Level Cleared?", ["No", "Yes"])
 difficulty = st.number_input("Current Difficulty (1 to 6)", min_value=1, max_value=6, value=3)
 
