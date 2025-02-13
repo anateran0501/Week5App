@@ -21,6 +21,9 @@ models = {
 # Remove models that failed to load
 models = {name: model for name, model in models.items() if model is not None}
 
+# Display available models
+st.write(f"Available models: {', '.join(models.keys())}")  
+
 # Load the dataset
 data = pd.read_csv("synthetic_game_data.csv")
 
