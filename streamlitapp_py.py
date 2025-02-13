@@ -49,10 +49,10 @@ selected_model.fit(X, y_next_difficulty)  # Train the model for next difficulty 
 next_difficulty_prediction = selected_model.predict(input_data)[0]
 
 # Map numerical difficulty back to text
-difficulty_reverse_mapping = {1: 'very easy', 2: 'easy', 3: 'medium', 4: 'challenging', 5: 'hard', 6: 'very hard'}
+difficulty_reverse_mapping = {1: 'Very easy', 2: 'Easy', 3: 'Medium', 4: 'Challenging', 5: 'Hard', 6: 'Very hard'}
 predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_prediction), 'unknown')
 
 # Display predictions
 st.subheader("Predicted Outcome:")
 st.write(f"**Next Level:** {int(next_level_prediction)}")
-st.write(f"**Next Difficulty:(1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard)** {predicted_difficulty}")
+st.write(f"**Next Difficulty:(1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard): ** {predicted_difficulty}")
