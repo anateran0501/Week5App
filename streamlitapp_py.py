@@ -55,4 +55,4 @@ predicted_difficulty = difficulty_reverse_mapping.get(round(next_difficulty_pred
 # Display predictions
 st.subheader("Predicted Outcome:")
 st.write(f"**Next Level:** {int(next_level_prediction)}")
-st.write(f"**Next Difficulty:(1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard):**  {predicted_difficulty}")
+st.write(f"**Next Difficulty (1:Very easy, 2: Easy, 3: Medium, 4: Challenging, 5: Hard, 6: Very hard):**  {predicted_difficulty}")
